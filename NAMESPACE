@@ -1,0 +1,10 @@
+useDynLib(sox, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+importFrom("graphics", "abline", "points", "segments", "axis", "matplot")
+importFrom("stats", "sd")
+importFrom("survival", "Surv", "coxph")
+importFrom("glmnet", "coxnet.deviance")
+export("sox",
+       "sox_cv",
+       "plot_sox_cv",
+       "plot_sox_sp")
