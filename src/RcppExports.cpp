@@ -11,24 +11,41 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // proximalGraph
-void proximalGraph(Rcpp::NumericVector& U, int& p, std::string& regul, Rcpp::NumericMatrix& grp, Rcpp::NumericMatrix& grpV, Rcpp::NumericVector& etaG, double lam);
+void proximalGraph(Rcpp::NumericVector& U, int& p, std::string& regul, Rcpp::IntegerMatrix& grp, Rcpp::IntegerMatrix& grpV, Rcpp::NumericVector& etaG, double lam);
 RcppExport SEXP _sox_proximalGraph(SEXP USEXP, SEXP pSEXP, SEXP regulSEXP, SEXP grpSEXP, SEXP grpVSEXP, SEXP etaGSEXP, SEXP lamSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type U(USEXP);
     Rcpp::traits::input_parameter< int& >::type p(pSEXP);
     Rcpp::traits::input_parameter< std::string& >::type regul(regulSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type grp(grpSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type grpV(grpVSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix& >::type grp(grpSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix& >::type grpV(grpVSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type etaG(etaGSEXP);
     Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
     proximalGraph(U, p, regul, grp, grpV, etaG, lam);
     return R_NilValue;
 END_RCPP
 }
+// proximalTree
+void proximalTree(Rcpp::NumericVector& U, int& p, std::string& regul, Rcpp::IntegerMatrix& grp, Rcpp::IntegerVector& own_var, Rcpp::IntegerVector& N_own_var, Rcpp::NumericVector& etaG, double lam);
+RcppExport SEXP _sox_proximalTree(SEXP USEXP, SEXP pSEXP, SEXP regulSEXP, SEXP grpSEXP, SEXP own_varSEXP, SEXP N_own_varSEXP, SEXP etaGSEXP, SEXP lamSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type U(USEXP);
+    Rcpp::traits::input_parameter< int& >::type p(pSEXP);
+    Rcpp::traits::input_parameter< std::string& >::type regul(regulSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix& >::type grp(grpSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector& >::type own_var(own_varSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector& >::type N_own_var(N_own_varSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type etaG(etaGSEXP);
+    Rcpp::traits::input_parameter< double >::type lam(lamSEXP);
+    proximalTree(U, p, regul, grp, own_var, N_own_var, etaG, lam);
+    return R_NilValue;
+END_RCPP
+}
 // sox_cpp
-Rcpp::List sox_cpp(Rcpp::NumericMatrix& x, Rcpp::NumericVector& start, Rcpp::NumericVector& stop, Rcpp::NumericVector& event, int& n_unique, std::string& regul, Rcpp::NumericVector& lam, Rcpp::NumericMatrix& grp, Rcpp::NumericMatrix& grpV, Rcpp::NumericVector& etaG, Rcpp::NumericVector& init, Rcpp::Function& l_ld, double& init_stepsize, double& ls_shrink, double& partol, int& maxit, bool& verbose);
-RcppExport SEXP _sox_sox_cpp(SEXP xSEXP, SEXP startSEXP, SEXP stopSEXP, SEXP eventSEXP, SEXP n_uniqueSEXP, SEXP regulSEXP, SEXP lamSEXP, SEXP grpSEXP, SEXP grpVSEXP, SEXP etaGSEXP, SEXP initSEXP, SEXP l_ldSEXP, SEXP init_stepsizeSEXP, SEXP ls_shrinkSEXP, SEXP partolSEXP, SEXP maxitSEXP, SEXP verboseSEXP) {
+Rcpp::List sox_cpp(Rcpp::NumericMatrix& x, Rcpp::NumericVector& start, Rcpp::NumericVector& stop, Rcpp::NumericVector& event, int& n_unique, std::string& regul, Rcpp::NumericVector& lam, Rcpp::IntegerMatrix& grp, Rcpp::IntegerMatrix& grpV, Rcpp::IntegerVector& own_var, Rcpp::IntegerVector& N_own_var, Rcpp::NumericVector& etaG, Rcpp::NumericVector& init, Rcpp::Function& l_ld, double& init_stepsize, double& ls_shrink, double& partol, int& maxit, bool& verbose);
+RcppExport SEXP _sox_sox_cpp(SEXP xSEXP, SEXP startSEXP, SEXP stopSEXP, SEXP eventSEXP, SEXP n_uniqueSEXP, SEXP regulSEXP, SEXP lamSEXP, SEXP grpSEXP, SEXP grpVSEXP, SEXP own_varSEXP, SEXP N_own_varSEXP, SEXP etaGSEXP, SEXP initSEXP, SEXP l_ldSEXP, SEXP init_stepsizeSEXP, SEXP ls_shrinkSEXP, SEXP partolSEXP, SEXP maxitSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -39,8 +56,10 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int& >::type n_unique(n_uniqueSEXP);
     Rcpp::traits::input_parameter< std::string& >::type regul(regulSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type lam(lamSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type grp(grpSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix& >::type grpV(grpVSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix& >::type grp(grpSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix& >::type grpV(grpVSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector& >::type own_var(own_varSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector& >::type N_own_var(N_own_varSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type etaG(etaGSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector& >::type init(initSEXP);
     Rcpp::traits::input_parameter< Rcpp::Function& >::type l_ld(l_ldSEXP);
@@ -49,14 +68,15 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double& >::type partol(partolSEXP);
     Rcpp::traits::input_parameter< int& >::type maxit(maxitSEXP);
     Rcpp::traits::input_parameter< bool& >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(sox_cpp(x, start, stop, event, n_unique, regul, lam, grp, grpV, etaG, init, l_ld, init_stepsize, ls_shrink, partol, maxit, verbose));
+    rcpp_result_gen = Rcpp::wrap(sox_cpp(x, start, stop, event, n_unique, regul, lam, grp, grpV, own_var, N_own_var, etaG, init, l_ld, init_stepsize, ls_shrink, partol, maxit, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_sox_proximalGraph", (DL_FUNC) &_sox_proximalGraph, 7},
-    {"_sox_sox_cpp", (DL_FUNC) &_sox_sox_cpp, 17},
+    {"_sox_proximalTree", (DL_FUNC) &_sox_proximalTree, 8},
+    {"_sox_sox_cpp", (DL_FUNC) &_sox_sox_cpp, 19},
     {NULL, NULL, 0}
 };
 

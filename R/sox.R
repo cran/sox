@@ -1,69 +1,113 @@
-#' fit a (time-dependent) Cox model with structured variable selection
+#' (Time-dependent) Cox model with structured variable selection
 #'
 #' @description
-#' Fit a (time-dependent) Cox model via penalized maximum likelihood, where the penalization is a weighted sum of infinity norm of (overlapping) groups of coefficients. The regularization path is computed at a grid of values for the regularization parameter lambda.
+#' Fit a (time-dependent) Cox model with overlapping (including nested) group lasso penalty. The regularization path is computed at a grid of values for the regularization parameter lambda.
 #' 
 #' @param x Predictor matrix with dimension \eqn{nm * p}, where \eqn{n} is the number of subjects, \eqn{m} is the maximum observation time, and \eqn{p} is the number of predictors. See Details.
-#' @param ID The ID of each subjects, each subject has one ID (many rows in \code{x} share one \code{ID}).
+#' @param ID The ID of each subjects, each subject has one ID (multiple rows in \code{x} can share one \code{ID}).
 #' @param time Represents the start of each time interval.
 #' @param time2 Represents the stop of each time interval.
 #' @param event Indicator of event. \code{event = 1} when event occurs and \code{event = 0} otherwise.
+#' @param penalty Character string, indicating whether "\code{overlapping}" or "\code{nested}" group lasso penalty is imposed.
 #' @param lambda Sequence of regularization coefficients \eqn{\lambda}'s.
-#' @param group \eqn{G * G} matrix describing the relationship between the groups of variables, where \eqn{G} represents the number of groups. Denote the \eqn{i}-th group of variables by \eqn{g_i}. The \eqn{(i,j)} entry is \code{1} if and only if \eqn{i\neq j} and \eqn{g_i} is a child group (subset) of \eqn{g_j}, and is \code{0} otherwise. See Examples and Details.
-#' @param group_variable \eqn{p * G} matrix describing the relationship between the groups and the variables. The \eqn{(i,j)} entry is \code{1} if and only if variable \eqn{i} is in group \eqn{g_j}, but not in any child group of \eqn{g_j}, and is \code{0} otherwise. See Examples and Details.
-#' @param penalty_weights Optional, vector of length \eqn{G} specifying the group-specific penalty weights. If not specified, the default value is \eqn{\mathbf{1}_G}. Modify with caution.
+#' @param group A \eqn{G * G} integer matrix required to describe the structure of the \code{overlapping} and \code{nested} groups. We recommend that the users generate it automatically using \code{\link{overlap_structure}()} and \code{\link{nested_structure}()}. See Examples and Details.
+#' @param group_variable A \eqn{p * G} integer matrix required to describe the structure of the \code{overlapping} groups. We recommend that the users generate it automatically using \code{\link{overlap_structure}()}. See Examples and Details.
+#' @param own_variable A non-decreasing integer vector of length \eqn{G} required to describe the structure of the \code{nested} groups. We recommend that the users generate it automatically using \code{\link{nested_structure}()}. See Examples and Details.
+#' @param no_own_variable An integer vector of length \eqn{G} required to describe the structure of the \code{nested} groups. We recommend that the users generate it automatically using \code{\link{nested_structure}()}. See Examples and Details
+#' @param penalty_weights Optional, vector of length \eqn{G} specifying the group-specific penalty weights. We recommend that the users generate it automatically using \code{\link{overlap_structure}()} or \code{\link{nested_structure}()}. If not specified, \eqn{\mathbf{1}_G} is used.
 #' @param par_init Optional, vector of initial values of the optimization algorithm. Default initial value is zero for all \eqn{p} variables.
-#' @param stepsize_init Initial value of the stepsize of the optimization algorithm. Default is 1.
+#' @param stepsize_init Initial value of the stepsize of the optimization algorithm. Default is 1.0.
 #' @param stepsize_shrink Factor in \eqn{(0,1)} by which the stepsize shrinks in the backtracking linesearch. Default is 0.8.
 #' @param tol Convergence criterion. Algorithm stops when the \eqn{l_2} norm of the difference between two consecutive updates is smaller than \code{tol}.
 #' @param maxit Maximum number of iterations allowed.
 #' @param verbose Logical, whether progress is printed.
 #' 
 #' @examples 
-#' # g3 in g1 -> grp_31 = 1
-#' # g3 in g2 -> grp_32 = 1
-#' # g5 in g2 -> grp_52 = 1
-#' # g5 in g4 -> grp_54 = 1
-#' grp <- matrix(c(0, 0, 0, 0, 0,
-#'                 0, 0, 0, 0, 0,
-#'                 1, 1, 0, 0, 0,
-#'                 0, 0, 0, 0, 0,
-#'                 0, 1, 0, 1, 0),
-#'               ncol = 5, byrow = TRUE)
-#'
-#' # Variable A1 is in g1 only: grp.var_11 = 1
-#' # Variable A1B is in g1 and g3, but g3 is a child group of g1,
-#' # so grp.var_63 = 1 while grp.var_61 = 0.
-#' grp.var <- matrix(c(1, 0, 0, 0, 0, #A1
-#'                     1, 0, 0, 0, 0, #A2
-#'                     0, 0, 0, 1, 0, #C1
-#'                     0, 0, 0, 1, 0, #C2
-#'                     0, 1, 0, 0, 0, #B
-#'                     0, 0, 1, 0, 0, #A1B
-#'                     0, 0, 1, 0, 0, #A2B
-#'                     0, 0, 0, 0, 1, #C1B
-#'                     0, 0, 0, 0, 1  #C2B
-#'                    ), ncol = 5, byrow = TRUE)
-#' eta_g <- rep(1, 5)
-#' x <- as.matrix(sim[, c("A1","A2","C1","C2","B",
-#'                        "A1B","A2B","C1B","C2B")])
-#' lam.seq <- 10^seq(0, -2, by = -0.2)
+#' x <- as.matrix(sim[, c("A1","A2","C1","C2","B","A1B","A2B","C1B","C2B")])
+#' lam.seq <- exp(seq(log(1e0), log(1e-3), length.out = 20))
 #' 
-#' fit <- sox(x = x,
-#'               ID = sim$Id,
-#'               time = sim$Start,
-#'               time2 = sim$Stop,
-#'               event = sim$Event,
-#'               lambda = lam.seq,
-#'               group = grp,
-#'               group_variable = grp.var,
-#'               penalty_weights = eta_g,
-#'               tol = 1e-4,
-#'               maxit = 1e3,
-#'               verbose = FALSE)
+#' # Variables:
+#' ## 1: A1
+#' ## 2: A2
+#' ## 3: C1
+#' ## 4: C2
+#' ## 5: B
+#' ## 6: A1B
+#' ## 7: A2B
+#' ## 8: C1B
+#' ## 9: C2B
+#' 
+#' # Overlapping groups:
+#' ## g1: A1, A2, A1B, A2B
+#' ## g2: B, A1B, A2B, C1B, C2B
+#' ## g3: A1B, A2B
+#' ## g4: C1, C2, C1B, C2B
+#' ## g5: C1B, C2B
+#' 
+#' overlapping.groups <- list(c(1, 2, 6, 7),
+#'                            c(5, 6, 7, 8, 9),
+#'                            c(6, 7),
+#'                            c(3, 4, 8, 9),
+#'                            c(8, 9))
+#'                            
+#' pars.overlapping <- overlap_structure(overlapping.groups)
+#' 
+#' fit.overlapping <- sox(
+#'   x = x,
+#'   ID = sim$Id,
+#'   time = sim$Start,
+#'   time2 = sim$Stop,
+#'   event = sim$Event,
+#'   penalty = "overlapping",
+#'   lambda = lam.seq,
+#'   group = pars.overlapping$groups,
+#'   group_variable = pars.overlapping$groups_var,
+#'   penalty_weights = pars.overlapping$group_weights,
+#'   tol = 1e-4,
+#'   maxit = 1e3,
+#'   verbose = FALSE
+#' )
+#' 
+#' str(fit.overlapping)
+#' 
+#' # Nested groups (misspecified, for the demonstration of the software only.)
+#' ## g1: A1, A2, C1, C2, B, A1B, A2B, C1B, C2B
+#' ## g2: A1B, A2B, A1B, A2B
+#' ## g3: C1, C2, C1B, C2B
+#' ## g4: 1
+#' ## g5: 2
+#' ## ...
+#' ## G12: 9
+#' 
+#' nested.groups <- list(1:9,
+#'                       c(1, 2, 6, 7),
+#'                       c(3, 4, 8, 9),
+#'                       1, 2, 3, 4, 5, 6, 7, 8, 9)
+#' 
+#' pars.nested <- nested_structure(nested.groups)
+#' 
+#' fit.nested <- sox(
+#'   x = x,
+#'   ID = sim$Id,
+#'   time = sim$Start,
+#'   time2 = sim$Stop,
+#'   event = sim$Event,
+#'   penalty = "nested",
+#'   lambda = lam.seq,
+#'   group = pars.nested$groups,
+#'   own_variable = pars.nested$own_variables,
+#'   no_own_variable = pars.nested$N_own_variables,
+#'   penalty_weights = pars.nested$group_weights,
+#'   tol = 1e-4,
+#'   maxit = 1e3,
+#'   verbose = FALSE
+#' )
+#' 
+#' str(fit.nested)
+#' 
 #' @details
-#' The predictor matrix should be of dimension \eqn{nm * p}. Each row records the values of covariates for one subject at one time, for example, the values at the day from \code{time} (Start) to \code{time2} (Stop). An example dataset \code{\link{sim}} is provided. The dataset has the same format produced by the \code{R} package \pkg{PermAlgo}. 
-#' The specification of arguments \code{group} and \code{group_variable} for the grouping structure can be found in \url{http://thoth.inrialpes.fr/people/mairal/spams/doc-R/html/doc_spams006.html#sec27}, the same as the grouping structure specification in the \code{R} package \pkg{spams}.
+#' The predictor matrix should be of dimension \eqn{nm * p}. Each row records the values of covariates for one subject at one time, for example, the values at the day from \code{time} (Start) to \code{time2} (Stop). An example dataset \code{\link{sim}} is provided. The dataset has the format produced by the \code{R} package \pkg{PermAlgo}. 
+#' The specification of the arguments \code{group}, \code{group_variable}, \code{own_variable} and \code{no_own_variable} for the grouping structure can be found in \url{https://thoth.inrialpes.fr/people/mairal/spams/doc-R/html/doc_spams006.html#sec26} and \url{https://thoth.inrialpes.fr/people/mairal/spams/doc-R/html/doc_spams006.html#sec27}.
 #'
 #' In the Examples below, \eqn{p=9,G=5}, the group structure is: \deqn{g_1 = \{A_{1}, A_{2}, A_{1}B, A_{2}B\},} \deqn{g_2  = \{B, A_{1}B, A_{2}B, C_{1}B, C_{2}B\},} \deqn{g_3  = \{A_{1}B, A_{2}B\},} \deqn{g_4  = \{C_1, C_2, C_{1}B, C_{2}B\},} \deqn{g_5  = \{C_{1}B, C_{2}B\}.}
 #' 
@@ -72,18 +116,26 @@
 #'   \item{lambdas}{The user-specified regularization coefficients \code{lambda} sorted in decreasing order.}
 #'   \item{estimates}{A matrix, with each column corresponding to the coefficient estimates at each \eqn{\lambda} in \code{lambdas}.}
 #'   \item{iterations}{A vector of number of iterations it takes to converge at each \eqn{\lambda} in \code{lambdas}.}
-sox <- function(x, ID,
-                time, time2, event,
-                lambda,
-                group,
-                group_variable,
-                penalty_weights,
-                par_init,
-                stepsize_init = 1,
-                stepsize_shrink = 0.8,
-                tol = 1e-5,
-                maxit = 1000L,
-                verbose = FALSE) {
+sox <- function(
+    x,
+    ID,
+    time,
+    time2,
+    event,
+    penalty,
+    lambda,
+    group,
+    group_variable,
+    own_variable,
+    no_own_variable,
+    penalty_weights,
+    par_init,
+    stepsize_init = 1,
+    stepsize_shrink = 0.8,
+    tol = 1e-5,
+    maxit = 1000L,
+    verbose = FALSE
+) {
   
   p <- ncol(x)
   if (missing(par_init)) {
@@ -99,15 +151,47 @@ sox <- function(x, ID,
   
   lambdas <- sort(lambda, decreasing = TRUE)
   
+  if (missing(own_variable)) {
+    if (penalty == "overlapping") {
+      own_variable <- integer()
+    } else {
+      stop("'own_variable' must be provided for 'nested' group lasso.")
+    }
+  }
+  if (missing(no_own_variable)) {
+    if (penalty == "overlapping") {
+      no_own_variable <- integer()
+    } else {
+      stop("'no_own_variable' must be provided for 'nested' group lasso.")
+    }
+  }
+  
+  if (missing(group_variable)) {
+    if (penalty == "nested") {
+      group_variable <- as.matrix(integer())
+    } else {
+      stop("'group_variable' must be provided for 'overlapping' group lasso.")
+    }
+  }
+  
+  if (penalty == "overlapping") {
+    regul <- "graph"
+  } else if (penalty == "nested") {
+    regul <- "tree-l2"
+    own_variable <- own_variable - 1L
+  }
+  
   fit <- sox_cpp(x = x,
                  start = time,
                  stop = time2,
                  event = event,
                  n_unique = n,
-                 regul = "graph",
+                 regul = regul,
                  lam = lambdas,
                  grp = group,
                  grpV = group_variable,
+                 own_var = own_variable,
+                 N_own_var = no_own_variable,
                  etaG = penalty_weights,
                  init = par_init,
                  l_ld = l_ld,
@@ -129,5 +213,6 @@ sox <- function(x, ID,
     warning("Maximum iterations reached at some lambdas. Check ` $iterations`.")
   }
   
+  class(results) <- "sox"
   return(results)
 }

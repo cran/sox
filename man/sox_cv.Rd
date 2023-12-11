@@ -10,12 +10,16 @@ sox_cv(
   time,
   time2,
   event,
+  penalty,
   lambda,
   group,
   group_variable,
+  own_variable,
+  no_own_variable,
   penalty_weights,
   par_init,
   nfolds = 10,
+  foldid = NULL,
   stepsize_init = 1,
   stepsize_shrink = 0.8,
   tol = 1e-05,
@@ -26,7 +30,7 @@ sox_cv(
 \arguments{
 \item{x}{Predictor matrix with dimension \eqn{nm * p}, where \eqn{n} is the number of subjects, \eqn{m} is the maximum observation time, and \eqn{p} is the number of predictors. See Details.}
 
-\item{ID}{The ID of each subjects, each subject has one ID (many rows in \code{x} share one \code{ID}).}
+\item{ID}{The ID of each subjects, each subject has one ID (multiple rows in \code{x} can share one \code{ID}).}
 
 \item{time}{Represents the start of each time interval.}
 
@@ -34,17 +38,25 @@ sox_cv(
 
 \item{event}{Indicator of event. \code{event = 1} when event occurs and \code{event = 0} otherwise.}
 
+\item{penalty}{Character string, indicating whether "\code{overlapping}" or "\code{nested}" group lasso penalty is imposed.}
+
 \item{lambda}{Sequence of regularization coefficients \eqn{\lambda}'s.}
 
-\item{group}{\eqn{G * G} matrix describing the relationship between the groups of variables, where \eqn{G} represents the number of groups. Denote the \eqn{i}-th group of variables by \eqn{g_i}. The \eqn{(i,j)} entry is \code{1} if and only if \eqn{i\neq j} and \eqn{g_i} is a child group (subset) of \eqn{g_j}, and is \code{0} otherwise. See Examples and Details.}
+\item{group}{A \eqn{G * G} integer matrix required to describe the structure of the \code{overlapping} and \code{nested} groups. We recommend that the users generate it automatically using \code{\link{overlap_structure}()} and \code{\link{nested_structure}()}. See Examples and Details.}
 
-\item{group_variable}{\eqn{p * G} matrix describing the relationship between the groups and the variables. The \eqn{(i,j)} entry is \code{1} if and only if variable \eqn{i} is in group \eqn{g_j}, but not in any child group of \eqn{g_j}, and is \code{0} otherwise. See Examples and Details.}
+\item{group_variable}{A \eqn{p * G} integer matrix required to describe the structure of the \code{overlapping} groups. We recommend that the users generate it automatically using \code{\link{overlap_structure}()}. See Examples and Details.}
 
-\item{penalty_weights}{Optional, vector of length \eqn{G} specifying the group-specific penalty weights. If not specified, the default value is \eqn{\mathbf{1}_G}. Modify with caution.}
+\item{own_variable}{A non-decreasing integer vector of length \eqn{G} required to describe the structure of the \code{nested} groups. We recommend that the users generate it automatically using \code{\link{nested_structure}()}. See Examples and Details.}
+
+\item{no_own_variable}{An integer vector of length \eqn{G} required to describe the structure of the \code{nested} groups. We recommend that the users generate it automatically using \code{\link{nested_structure}()}. See Examples and Details}
+
+\item{penalty_weights}{Optional, vector of length \eqn{G} specifying the group-specific penalty weights. We recommend that the users generate it automatically using \code{\link{overlap_structure}()} or \code{\link{nested_structure}()}. If not specified, \eqn{\mathbf{1}_G} is used.}
 
 \item{par_init}{Optional, vector of initial values of the optimization algorithm. Default initial value is zero for all \eqn{p} variables.}
 
 \item{nfolds}{Optional, the folds of cross-validation. Default is 10.}
+
+\item{foldid}{Optional, user-specified vector indicating the cross-validation fold in which each observation should be included. Values in this vector should range from 1 to \code{nfolds}. If left unspecified, \code{sox} will randomly assign observations to folds}
 
 \item{stepsize_init}{Initial value of the stepsize of the optimization algorithm. Default is 1.}
 
@@ -64,54 +76,106 @@ A list.
   \item{cvup}{The cv error plus its standard error for each lambda.}
   \item{cvlo}{The cv error minus its standard error for each lambda.}
   \item{nzero}{The number of non-zero coefficients at each lambda.}
-  \item{sox.fit}{A sox fit for the full data at all lambdas.}
+  \item{sox.fit}{A fitted model for the full data at all lambdas of class "\code{sox}".}
   \item{lambda.min}{The lambda such that the \code{cvm} reach its minimum.}
   \item{lambda.1se}{The maximum of lambda such that the \code{cvm} is less than the minimum the \code{cvup} (the minmum of \code{cvm} plus its standard error).}
+  \item{foldid}{The fold assignments used.}
+  \item{index}{A one column matrix with the indices of \code{lambda.min} and \code{lambda.1se}.}
+  \item{iterations}{A vector of number of iterations it takes to converge at each \eqn{\lambda} in \code{lambdas}.}
 }
 \description{
 Conduct cross-validation (cv) for \code{sox}.
 }
 \details{
 For each lambda, 10 folds cross-validation (by default) is performed. The cv error is defined as follows. Suppose we perform \eqn{K}-fold cross-validation, denote \eqn{\hat{\beta}^{-k}} by the estimate obtained from the rest of \eqn{K-1} folds (training set). The error of the \eqn{k}-th fold (test set) is defined as \eqn{2(P-Q)} divided by \eqn{R}, where \eqn{P} is the log partial likelihood evaluated at  \eqn{\hat{\beta}^{-k}} using the entire dataset, Q is the log partial likelihood evaluated at \eqn{\hat{\beta}^{-k}} using the training set, and R is the number of events in the test set. We do not use the negative log partial likelihood evaluated at \eqn{\hat{\beta}^{-k}} using the test set because the former definition can efficiently use the risk set, and thus it is more stable when the number of events in each test set is small (think of leave-one-out). The cv error is used in parameter tuning. To account for balance in outcomes among the randomly formed test set, we divide the deviance \eqn{2(P-Q)} by R. 
-To get the estimated coefficients that has the minimum cv error, use \code{sox()$Estimates[sox()$Lambdas==sox_cv()$lambda.min]}. To apply the 1-se rule, use \code{sox()$Estimates[sox()$Lambdas==sox_cv()$lambda.1se]}.
+To get the estimated coefficients that has the minimum cv error, use \code{sox_cv()$Estimates[, sox_cv$index["min",]]}. To apply the 1-se rule, use \code{sox_cv()$Estimates[, sox_cv$index["1se",]]}.
 }
 \examples{
-grp <- matrix(c(0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                1, 1, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 1, 0, 1, 0),
-              ncol = 5, byrow = TRUE)
-grp.var <- matrix(c(1, 0, 0, 0, 0, #A1
-                    1, 0, 0, 0, 0, #A2
-                    0, 0, 0, 1, 0, #C1
-                    0, 0, 0, 1, 0, #C2
-                    0, 1, 0, 0, 0, #B
-                    0, 0, 1, 0, 0, #A1B
-                    0, 0, 1, 0, 0, #A2B
-                    0, 0, 0, 0, 1, #C1B
-                    0, 0, 0, 0, 1  #C2B
-                   ), ncol = 5, byrow = TRUE)
-eta_g <- rep(1, 5)
-x <- as.matrix(sim[, c("A1","A2","C1","C2","B",
-                       "A1B","A2B","C1B","C2B")])
-lam.seq <- 10^seq(0, -2, by = -0.2)
+x <- as.matrix(sim[, c("A1","A2","C1","C2","B","A1B","A2B","C1B","C2B")])
+lam.seq <- exp(seq(log(1e0), log(1e-3), length.out = 20))
 
-cv <- sox_cv(x = x,
-                ID = sim$Id,
-                time = sim$Start,
-                time2 = sim$Stop,
-                event = sim$Event,
-                lambda = lam.seq,
-                group = grp,
-                group_variable = grp.var,
-                penalty_weights = eta_g,
-                nfolds = 5,
-                tol = 1e-4,
-                maxit = 1e3,
-                verbose = FALSE)
+# Variables:
+## 1: A1
+## 2: A2
+## 3: C1
+## 4: C2
+## 5: B
+## 6: A1B
+## 7: A2B
+## 8: C1B
+## 9: C2B
+
+# Overlapping groups:
+## g1: A1, A2, A1B, A2B
+## g2: B, A1B, A2B, C1B, C2B
+## g3: A1B, A2B
+## g4: C1, C2, C1B, C2B
+## g5: C1B, C2B
+
+overlapping.groups <- list(c(1, 2, 6, 7),
+                           c(5, 6, 7, 8, 9),
+                           c(6, 7),
+                           c(3, 4, 8, 9),
+                           c(8, 9))
+                           
+pars.overlapping <- overlap_structure(overlapping.groups)
+
+cv.overlapping <- sox_cv(
+  x = x,
+  ID = sim$Id,
+  time = sim$Start,
+  time2 = sim$Stop,
+  event = sim$Event,
+  penalty = "overlapping",
+  lambda = lam.seq,
+  group = pars.overlapping$groups,
+  group_variable = pars.overlapping$groups_var,
+  penalty_weights = pars.overlapping$group_weights,
+  nfolds = 5,
+  tol = 1e-4,
+  maxit = 1e3,
+  verbose = FALSE
+)
+
+str(cv.overlapping)
+
+# Nested groups (misspecified, for the demonstration of the software only.)
+## g1: A1, A2, C1, C2, B, A1B, A2B, C1B, C2B
+## g2: A1B, A2B, A1B, A2B
+## g3: C1, C2, C1B, C2B
+## g4: 1
+## g5: 2
+## ...
+## G12: 9
+
+nested.groups <- list(1:9,
+                      c(1, 2, 6, 7),
+                      c(3, 4, 8, 9),
+                      1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+pars.nested <- nested_structure(nested.groups)
+
+cv.nested <- sox_cv(
+  x = x,
+  ID = sim$Id,
+  time = sim$Start,
+  time2 = sim$Stop,
+  event = sim$Event,
+  penalty = "nested",
+  lambda = lam.seq,
+  group = pars.nested$groups,
+  own_variable = pars.nested$own_variables,
+  no_own_variable = pars.nested$N_own_variables,
+  penalty_weights = pars.nested$group_weights,
+  nfolds = 5,
+  tol = 1e-4,
+  maxit = 1e3,
+  verbose = FALSE
+)
+
+str(cv.nested)
                 
 }
 \seealso{
-\code{\link{sox}}, \code{\link{plot_sox_cv}}.
+\code{\link{sox}}, \code{\link{plot.sox_cv}}.
 }

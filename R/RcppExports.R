@@ -5,7 +5,11 @@ proximalGraph <- function(U, p, regul, grp, grpV, etaG, lam) {
     invisible(.Call(`_sox_proximalGraph`, U, p, regul, grp, grpV, etaG, lam))
 }
 
-sox_cpp <- function(x, start, stop, event, n_unique, regul, lam, grp, grpV, etaG, init, l_ld, init_stepsize, ls_shrink, partol, maxit, verbose) {
-    .Call(`_sox_sox_cpp`, x, start, stop, event, n_unique, regul, lam, grp, grpV, etaG, init, l_ld, init_stepsize, ls_shrink, partol, maxit, verbose)
+proximalTree <- function(U, p, regul, grp, own_var, N_own_var, etaG, lam) {
+    invisible(.Call(`_sox_proximalTree`, U, p, regul, grp, own_var, N_own_var, etaG, lam))
+}
+
+sox_cpp <- function(x, start, stop, event, n_unique, regul, lam, grp, grpV, own_var, N_own_var, etaG, init, l_ld, init_stepsize, ls_shrink, partol, maxit, verbose) {
+    .Call(`_sox_sox_cpp`, x, start, stop, event, n_unique, regul, lam, grp, grpV, own_var, N_own_var, etaG, init, l_ld, init_stepsize, ls_shrink, partol, maxit, verbose)
 }
 

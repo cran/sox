@@ -3,7 +3,30 @@
 \docType{package}
 \name{sox-package}
 \alias{sox-package}
-\title{sox}
+\alias{_PACKAGE}
+\title{sox: Structured Learning in Time-Dependent Cox Models}
 \description{
-Efficient procedures for fitting and cross-validating the structurally-regularized time-dependent Cox models. The penalty term is a weighted sum of infinity norms of (overlapping) groups of coefficients, which can select variables following a user-specified grouping structure.
+Efficient procedures for fitting and cross-validating the structurally-regularized time-dependent Cox models.
 }
+\author{
+\strong{Maintainer}: Yi Lian \email{yi.lian@mail.mcgill.ca}
+
+Authors:
+\itemize{
+  \item Guanbo Wang
+  \item Archer Y. Yang
+  \item Mireille E. Schnitzer
+  \item Robert W. Platt
+  \item Rui Wang
+  \item Marc Dorais
+  \item Sylvie Perreault
+}
+
+Other contributors:
+\itemize{
+  \item Julien Mairal [contributor]
+  \item Yuansi Chen [contributor]
+}
+
+}
+\keyword{internal}

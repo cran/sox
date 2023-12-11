@@ -6,5 +6,9 @@ importFrom("survival", "Surv", "coxph")
 importFrom("glmnet", "coxnet.deviance")
 export("sox",
        "sox_cv",
-       "plot_sox_cv",
-       "plot_sox_sp")
+       "nested_structure",
+       "overlap_structure")
+S3method(plot, sox)
+export(plot.sox)
+S3method(plot, sox_cv)
+export(plot.sox_cv)
