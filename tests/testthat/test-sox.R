@@ -159,3 +159,4 @@ cv.nested <- sox_cv(
 plot(cv.nested$sox.fit)
 plot(cv.nested)
 plot(cv.nested, type = "solution-path")
+

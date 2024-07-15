@@ -264,7 +264,7 @@ namespace FISTA {
                      virtual void add_mult_design_matrix(const E& prim, E& out, const T fact) const { };
 
                   private:
-                     explicit SplittingFunction<T,F,D,E>(const SplittingFunction<T,F,D,E>& loss);
+                     explicit SplittingFunction(const SplittingFunction<T,F,D,E>& loss);
                      SplittingFunction<T,F,D,E>& operator=(const SplittingFunction<T,F,D,E>& loss);
                };
 
@@ -289,7 +289,7 @@ namespace FISTA {
                   const bool intercept = false) const = 0;
 
          private:
-            explicit Loss<T,D,E>(const Loss<T,D,E>& dict);
+            explicit Loss(const Loss<T,D,E>& dict);
             Loss<T,D,E>& operator=(const Loss<T,D,E>& dict);
       };
 
@@ -352,7 +352,7 @@ namespace FISTA {
             };
 
          private:
-            explicit SqLossMissing<T>(const SqLossMissing<T>& dict);
+            explicit SqLossMissing(const SqLossMissing<T>& dict);
             SqLossMissing<T>& operator=(const SqLossMissing<T>& dict);
             const AbstractMatrixB<T>* _D;
             Vector<T> _x;
@@ -485,7 +485,7 @@ namespace FISTA {
             };
 
          private:
-            explicit SqLoss<T>(const SqLoss<T>& dict);
+            explicit SqLoss(const SqLoss<T>& dict);
             SqLoss<T>& operator=(const SqLoss<T>& dict);
             const AbstractMatrixB<T>* _D;
             Vector<T> _x;
@@ -582,7 +582,7 @@ namespace FISTA {
             };
 
          private:
-            explicit HingeLoss<T>(const HingeLoss<T>& dict);
+            explicit HingeLoss(const HingeLoss<T>& dict);
             HingeLoss<T>& operator=(const HingeLoss<T>& dict);
 
             const AbstractMatrixB<T>* _X;
@@ -678,7 +678,7 @@ namespace FISTA {
                _X->multTrans(grad1,grad2);
             };
          private:
-            explicit LogLoss<T,weighted>(const LogLoss<T,weighted>& dict);
+            explicit LogLoss(const LogLoss<T,weighted>& dict);
             LogLoss<T,weighted>& operator=(const LogLoss<T,weighted>& dict);
 
             const AbstractMatrixB<T>* _X;
@@ -789,7 +789,7 @@ namespace FISTA {
                _X->mult(grad1,grad2,true,true);
             };
          private:
-            explicit MultiLogLoss<T>(const MultiLogLoss<T>& dict);
+            explicit MultiLogLoss(const MultiLogLoss<T>& dict);
             MultiLogLoss<T>& operator=(const MultiLogLoss<T>& dict);
 
             const AbstractMatrixB<T>* _X;
@@ -860,7 +860,7 @@ namespace FISTA {
                _X->multTrans(grad1,grad2);
             };
          private:
-            explicit PoissonLoss<T>(const PoissonLoss<T>& dict);
+            explicit PoissonLoss(const PoissonLoss<T>& dict);
             PoissonLoss<T>& operator=(const PoissonLoss<T>& dict);
 
             const AbstractMatrixB<T>* _X;
@@ -916,7 +916,7 @@ namespace FISTA {
                _X->mult(tmp,grad2,true,false);
             };
          private:
-            explicit LossCur<T>(const LossCur<T>& dict);
+            explicit LossCur(const LossCur<T>& dict);
             LossCur<T>& operator=(const LossCur<T>& dict);
 
             const AbstractMatrixB<T>* _X;
@@ -992,7 +992,7 @@ namespace FISTA {
             };
 
          private:
-            explicit SqLossMat<T>(const SqLossMat<T>& dict);
+            explicit SqLossMat(const SqLossMat<T>& dict);
             SqLossMat<T>& operator=(const SqLossMat<T>& dict);
             const AbstractMatrixB<T>* _D;
             Matrix<T> _x;
@@ -1070,7 +1070,7 @@ namespace FISTA {
             virtual void dummy() = 0;
 
          private:
-            explicit LossMatSup<T,L>(const LossMatSup<T,L>& dict);
+            explicit LossMatSup(const LossMatSup<T,L>& dict);
             LossMatSup<T,L>& operator=(const LossMatSup<T,L>& dict);
             int _m;
 
@@ -1161,7 +1161,7 @@ namespace FISTA {
             regul_t _id;
 
          private:
-            explicit Regularizer<T,D>(const Regularizer<T,D>& reg);
+            explicit Regularizer(const Regularizer<T,D>& reg);
             Regularizer<T,D>& operator=(const Regularizer<T,D>& reg);
       };
 

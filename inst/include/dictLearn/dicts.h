@@ -211,7 +211,7 @@ template <typename T> class Trainer {
 
    private:
       /// Forbid lazy copies
-      explicit Trainer<T>(const Trainer<T>& trainer);
+      explicit Trainer(const Trainer<T>& trainer);
       /// Forbid lazy copies
       Trainer<T>& operator=(const Trainer<T>& trainer);
 

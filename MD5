@@ -1,4 +1,4 @@
-d59c54acf8f4608383696db1759f58f0 *DESCRIPTION
+d6df37a7380f22b20008d1754ddb38e7 *DESCRIPTION
 3baa6b7250411b4a5080c96e0f8e8734 *NAMESPACE
 bf48676d48d079003c371aaae45c1a19 *R/RcppExports.R
 d42bd89b5936d3e45c351d6d48afb015 *R/auxiliary_functions.R
@@ -17,16 +17,16 @@ cfb560e2d94e038b123f4f69118f5728 *data/sim.rda
 3dc3aef39a71d6f7fb9749b4c198bcf9 *inst/include/decomp/lsqsplx.h
 f5888a091ce862509c50352216eeba50 *inst/include/decomp/projsplx.h
 d0fee4fb308227a0cf17fd6a61d62c46 *inst/include/dictLearn/arch.h
-66444c2fc5982ad53ef3c6503d3be6ee *inst/include/dictLearn/dicts.h
+e48ac79eb78a028f4d4a782f423f486c *inst/include/dictLearn/dicts.h
 dd1f380ad017e5d57e147d418548a6d3 *inst/include/linalg/cblas_alt_template.h
 956823086f7b4f50ce5614b62ff89c6a *inst/include/linalg/cblas_defvar.h
 3713b702382ffcdbc0c7d5e7300ab98b *inst/include/linalg/cblas_template.h
-96fd5a1da979f5c77e3b25f7764f5e99 *inst/include/linalg/linalg.h
+28ab7cefaf34e64d2738e50927ddd92a *inst/include/linalg/linalg.h
 2ce40a1bee1885a25383e2e88bc1eacf *inst/include/linalg/list.h
 4351ae9a5882fd5d9e1c75c8846d0955 *inst/include/linalg/mexutils.h
 fb464da0acd358342d3d431abd0bb641 *inst/include/linalg/misc.h
 a2e0a57a91dfd34b15529750f8636e35 *inst/include/linalg/utils.h
-e38d28d29330ef580c747aa492f36b51 *inst/include/prox/fista.h
+156a5a6ee2bf05e6b6493859d7b54a40 *inst/include/prox/fista.h
 9934253e0d26841965273688ca2207e4 *inst/include/prox/groups-graph.h
 9550bdf5a5a8c70db1dc911c7ffdc373 *inst/include/prox/mexgrouputils.h
 5fbb65a105231b224c3579b605f9a646 *inst/include/prox/project.h
@@ -38,7 +38,7 @@ c4f316fb3bff1abc0dacc4c6846c77dc *man/overlap_structure.Rd
 39fd3bd2945d4980b7e084bf01ea2ebb *man/plot.sox.Rd
 58ef0dd42875f52c3fa5b4b6c4aee1c3 *man/plot.sox_cv.Rd
 ad3966277082e7fa4d036990c2a69b54 *man/sim.Rd
-9627d2197e6b52e632582d7f95bbf80f *man/sox-package.Rd
+33e2cd72c5e1259c47be1419ca6f5a9c *man/sox-package.Rd
 d56b42dea542aeda45b03248def9dd2c *man/sox.Rd
 3f6812942638dce0a54dffaacc914304 *man/sox_cv.Rd
 4543723a822454b64873fbd8fe47ae60 *src/Makevars
@@ -46,4 +46,4 @@ d56b42dea542aeda45b03248def9dd2c *man/sox.Rd
 e8f43238aef64cea949eaa80417b3998 *src/main.cpp
 bffe3101056d5afc3a7b7ce36426f32a *tests/testthat.R
 e0c5f0887d7e7c6bdde032b7abd777ca *tests/testthat/Rplots.pdf
-f01568da081871d771d3308d277e87f9 *tests/testthat/test-sox.R
+0a206379af16f32a6bbcfc7e39af91fe *tests/testthat/test-sox.R

@@ -3,7 +3,6 @@
 \docType{package}
 \name{sox-package}
 \alias{sox-package}
-\alias{_PACKAGE}
 \title{sox: Structured Learning in Time-Dependent Cox Models}
 \description{
 Efficient procedures for fitting and cross-validating the structurally-regularized time-dependent Cox models.

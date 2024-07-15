@@ -532,7 +532,7 @@ template<typename T> class Matrix : public Data<T>, public AbstractMatrix<T>, pu
 
    protected:
    /// Forbid lazy copies
-   explicit Matrix<T>(const Matrix<T>& matrix);
+   explicit Matrix(const Matrix<T>& matrix);
    /// Forbid lazy copies
    Matrix<T>& operator=(const Matrix<T>& matrix);
 
@@ -560,7 +560,7 @@ template<typename T> class Vector {
    /// Constructor with existing data
    Vector(T* X, INTM n);
    /// Copy constructor
-   explicit Vector<T>(const Vector<T>& vec);
+   explicit Vector(const Vector<T>& vec);
 
    /// Destructor
    virtual ~Vector();
