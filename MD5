@@ -1,7 +1,7 @@
-d6df37a7380f22b20008d1754ddb38e7 *DESCRIPTION
-3baa6b7250411b4a5080c96e0f8e8734 *NAMESPACE
+ba744ac09ea0426ad2eda4ec536d1f91 *DESCRIPTION
+d898a398929130bd73bc7e876b5abc80 *NAMESPACE
 bf48676d48d079003c371aaae45c1a19 *R/RcppExports.R
-d42bd89b5936d3e45c351d6d48afb015 *R/auxiliary_functions.R
+a54287eb5b262a70c92fd8a49df68496 *R/auxiliary_functions.R
 03d836baa3928a0bde1f16d8df376a41 *R/datadoc.R
 70fa972bd1c5e5c2405749d278ccedc3 *R/nested_structure.R
 5d1c702c32400d2987ea9e00d9c359ed *R/overlap_structure.R
@@ -45,5 +45,5 @@ d56b42dea542aeda45b03248def9dd2c *man/sox.Rd
 83e76bad79822947d0e9e572142e698b *src/RcppExports.cpp
 e8f43238aef64cea949eaa80417b3998 *src/main.cpp
 bffe3101056d5afc3a7b7ce36426f32a *tests/testthat.R
-e0c5f0887d7e7c6bdde032b7abd777ca *tests/testthat/Rplots.pdf
+88b5f111f3675e102a5ad150bbd8bf0e *tests/testthat/Rplots.pdf
 0a206379af16f32a6bbcfc7e39af91fe *tests/testthat/test-sox.R

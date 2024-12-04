@@ -2,7 +2,7 @@ useDynLib(sox, .registration=TRUE)
 importFrom(Rcpp, evalCpp)
 importFrom("graphics", "abline", "points", "segments", "axis", "matplot")
 importFrom("stats", "sd")
-importFrom("survival", "Surv", "coxph")
+importFrom("survival", "Surv", "coxph", "coxph.control")
 importFrom("glmnet", "coxnet.deviance")
 export("sox",
        "sox_cv",
