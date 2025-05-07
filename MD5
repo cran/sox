@@ -1,4 +1,4 @@
-ba744ac09ea0426ad2eda4ec536d1f91 *DESCRIPTION
+3ec8e6fcdcd70d32318b6e0b6758b9cd *DESCRIPTION
 d898a398929130bd73bc7e876b5abc80 *NAMESPACE
 bf48676d48d079003c371aaae45c1a19 *R/RcppExports.R
 a54287eb5b262a70c92fd8a49df68496 *R/auxiliary_functions.R
@@ -13,7 +13,7 @@ a54287eb5b262a70c92fd8a49df68496 *R/auxiliary_functions.R
 b992a2f523494a3a7bce19e42d5567b7 *README.md
 cfb560e2d94e038b123f4f69118f5728 *data/sim.rda
 4770a8d13a86244fa9a754c9b96c5924 *inst/COPYRIGHTS
-6e8986c3b186f8c47d2ec1aee39345ee *inst/include/decomp/decomp.h
+873e7714cb1a6b88317e2d343adfc9eb *inst/include/decomp/decomp.h
 3dc3aef39a71d6f7fb9749b4c198bcf9 *inst/include/decomp/lsqsplx.h
 f5888a091ce862509c50352216eeba50 *inst/include/decomp/projsplx.h
 d0fee4fb308227a0cf17fd6a61d62c46 *inst/include/dictLearn/arch.h
@@ -32,7 +32,7 @@ a2e0a57a91dfd34b15529750f8636e35 *inst/include/linalg/utils.h
 5fbb65a105231b224c3579b605f9a646 *inst/include/prox/project.h
 9df173e9210ac87f4e1629fcc903b539 *inst/include/prox/surrogate.h
 a51a1ba4646599540f24f46e1e3486d9 *inst/include/prox/svm.h
-742f05944504ab6af77d9217e12a2127 *inst/include/spams.h
+3fb311a6266482852f2ce5e4efa29e36 *inst/include/spams.h
 ebb550366878d92d1f1481e8d6bd7ac9 *man/nested_structure.Rd
 c4f316fb3bff1abc0dacc4c6846c77dc *man/overlap_structure.Rd
 39fd3bd2945d4980b7e084bf01ea2ebb *man/plot.sox.Rd

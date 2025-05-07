@@ -284,10 +284,10 @@ SpMatrix<T> *_omp(Matrix<T> *X,Matrix<T> *D,Matrix<T> **path,bool return_reg_pat
     if(return_reg_path) {
       *path = new Matrix<T>(K,scalar_L);
       (*path)->setZeros();
-      omp((Matrix<T> &)(*X),(Matrix<T> &)(*D),(SpMatrix<T> &)(*alpha),pL,pE,pLambda,vecL,vecEps,vecLambda,numThreads,*path);
+      spams_omp((Matrix<T> &)(*X),(Matrix<T> &)(*D),(SpMatrix<T> &)(*alpha),pL,pE,pLambda,vecL,vecEps,vecLambda,numThreads,*path);
     } else {
       *path = NULL;
-      omp((Matrix<T> &)(*X),(Matrix<T> &)(*D),(SpMatrix<T> &)(*alpha),pL,pE,pLambda,vecL,vecEps,vecLambda,numThreads);
+      spams_omp((Matrix<T> &)(*X),(Matrix<T> &)(*D),(SpMatrix<T> &)(*alpha),pL,pE,pLambda,vecL,vecEps,vecLambda,numThreads);
     }
     return alpha;
 }

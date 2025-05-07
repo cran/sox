@@ -1,8 +1,8 @@
 Package: sox
 Type: Package
 Title: Structured Learning in Time-Dependent Cox Models
-Version: 1.2.1
-Date: 2024-12-03
+Version: 1.2.2
+Date: 2025-05-07
 Authors@R: c(person("Yi", "Lian", role = c("aut", "cre"), email = "yi.lian@mail.mcgill.ca"),
              person("Guanbo", "Wang", role = "aut"),
              person("Archer Y.", "Yang", role = "aut"),
@@ -25,7 +25,7 @@ RoxygenNote: 7.3.1
 LazyData: true
 Copyright: file inst/COPYRIGHTS
 NeedsCompilation: yes
-Packaged: 2024-12-04 03:05:49 UTC; YLIAN
+Packaged: 2025-05-07 18:20:11 UTC; YLIAN
 Author: Yi Lian [aut, cre],
   Guanbo Wang [aut],
   Archer Y. Yang [aut],
@@ -38,4 +38,4 @@ Author: Yi Lian [aut, cre],
   Yuansi Chen [ctb]
 Maintainer: Yi Lian <yi.lian@mail.mcgill.ca>
 Repository: CRAN
-Date/Publication: 2024-12-04 05:40:01 UTC
+Date/Publication: 2025-05-07 18:40:01 UTC
