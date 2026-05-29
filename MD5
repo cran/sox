@@ -1,6 +1,6 @@
-3ec8e6fcdcd70d32318b6e0b6758b9cd *DESCRIPTION
+2feac29bd784cf4f5bc9ddcb243387df *DESCRIPTION
 d898a398929130bd73bc7e876b5abc80 *NAMESPACE
-bf48676d48d079003c371aaae45c1a19 *R/RcppExports.R
+1247f29bd36aaa087f4c6bcf6f7dccc3 *R/RcppExports.R
 a54287eb5b262a70c92fd8a49df68496 *R/auxiliary_functions.R
 03d836baa3928a0bde1f16d8df376a41 *R/datadoc.R
 70fa972bd1c5e5c2405749d278ccedc3 *R/nested_structure.R
@@ -24,7 +24,7 @@ dd1f380ad017e5d57e147d418548a6d3 *inst/include/linalg/cblas_alt_template.h
 28ab7cefaf34e64d2738e50927ddd92a *inst/include/linalg/linalg.h
 2ce40a1bee1885a25383e2e88bc1eacf *inst/include/linalg/list.h
 4351ae9a5882fd5d9e1c75c8846d0955 *inst/include/linalg/mexutils.h
-fb464da0acd358342d3d431abd0bb641 *inst/include/linalg/misc.h
+d8c3ea5e62e8d120d8934102fb722f17 *inst/include/linalg/misc.h
 a2e0a57a91dfd34b15529750f8636e35 *inst/include/linalg/utils.h
 156a5a6ee2bf05e6b6493859d7b54a40 *inst/include/prox/fista.h
 9934253e0d26841965273688ca2207e4 *inst/include/prox/groups-graph.h
